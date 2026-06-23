@@ -1,0 +1,147 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  b2b-saml-sp demo: Lambda + DynamoDB sessions + ACM cert in us-east-1.
+  Function URL is created via the post-deploy CLI script (CFN hook blocks AWS::Lambda::Url).
+  CloudFront + Route 53 ALIAS are also created via the post-deploy script.
+
+Parameters:
+  AppName:
+    Type: String
+    Default: b2b-saml-sp
+  Domain:
+    Type: String
+    Default: totalcontrol.demo-connect.us
+  HostedZoneId:
+    Type: String
+    Description: Route 53 hosted zone ID for the parent zone (e.g. for demo-connect.us)
+  SpEntityId:
+    Type: String
+    Default: urn:fiscal-psft:saml-sp-demo
+  IdpMetadataPath:
+    Type: String
+    Default: ./fiscal-psft_cic-demo-platform_auth0app_com-metadata.xml
+  IdpCertPath:
+    Type: String
+    Default: ./fiscal-psft.pem
+  TokenExchangeUrl:
+    Type: String
+    Default: https://fiscal-psft.cic-demo-platform.auth0app.com/oauth/token
+  TokenExchangeClientId:
+    Type: String
+    Default: mErGed14NXXPDzkVbl5pVaxJ4BDphLWk
+  TokenExchangeClientSecret:
+    Type: String
+    NoEcho: true
+  TokenExchangeAudience:
+    Type: String
+    Default: api://adp.com/services
+  TokenExchangeSubjectTokenType:
+    Type: String
+    Default: https://fiscal-psft.com/token-type/oag-session
+  ProfileMgmtTokenUrl:
+    Type: String
+    Default: https://fiscal-psft.cic-demo-platform.auth0app.com/oauth/token
+  ProfileMgmtAudience:
+    Type: String
+    Default: https://fiscal-psft.cic-demo-platform.auth0app.com/api/v2/
+  ProfileMgmtClientId:
+    Type: String
+    Default: lcGv2U9R2qV52M8NNDr1e41M95ZGWPBR
+  ProfileMgmtClientSecret:
+    Type: String
+    NoEcho: true
+  OidcTenantBaseUrl:
+    Type: String
+    Default: https://adp-auth.demo-connect.us
+  OidcClientId:
+    Type: String
+    Default: 8Zro0UN0hnnUXggyDXGm6qxfHmO4ic4V
+  OidcClientSecret:
+    Type: String
+    NoEcho: true
+  SessionSecret:
+    Type: String
+    NoEcho: true
+
+Resources:
+  SessionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub '${AppName}-sessions'
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: expires
+        Enabled: true
+
+  AppFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AppName}-app'
+      CodeUri: ../.build/
+      Handler: lambda.handler
+      Runtime: nodejs20.x
+      MemorySize: 512
+      Timeout: 15
+      Architectures: [arm64]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SessionsTable
+      Environment:
+        Variables:
+          NODE_ENV: production
+          SP_BASE_URL: !Sub 'https://${Domain}'
+          SP_ENTITY_ID: !Ref SpEntityId
+          IDP_METADATA_PATH: !Ref IdpMetadataPath
+          IDP_CERT_PATH: !Ref IdpCertPath
+          TOKEN_EXCHANGE_URL: !Ref TokenExchangeUrl
+          TOKEN_EXCHANGE_CLIENT_ID: !Ref TokenExchangeClientId
+          TOKEN_EXCHANGE_CLIENT_SECRET: !Ref TokenExchangeClientSecret
+          TOKEN_EXCHANGE_AUDIENCE: !Ref TokenExchangeAudience
+          TOKEN_EXCHANGE_SUBJECT_TOKEN_TYPE: !Ref TokenExchangeSubjectTokenType
+          PROFILE_MGMT_TOKEN_URL: !Ref ProfileMgmtTokenUrl
+          PROFILE_MGMT_AUDIENCE: !Ref ProfileMgmtAudience
+          PROFILE_MGMT_CLIENT_ID: !Ref ProfileMgmtClientId
+          PROFILE_MGMT_CLIENT_SECRET: !Ref ProfileMgmtClientSecret
+          OIDC_TENANT_BASE_URL: !Ref OidcTenantBaseUrl
+          OIDC_CLIENT_ID: !Ref OidcClientId
+          OIDC_CLIENT_SECRET: !Ref OidcClientSecret
+          SESSION_SECRET: !Ref SessionSecret
+          SESSION_STORE: dynamodb
+          SESSION_DDB_TABLE: !Ref SessionsTable
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+
+  AppCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref Domain
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref Domain
+          HostedZoneId: !Ref HostedZoneId
+
+Outputs:
+  LambdaFunctionName:
+    Value: !Ref AppFunction
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaFunctionName'
+  LambdaFunctionArn:
+    Value: !GetAtt AppFunction.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaFunctionArn'
+  SessionsTableName:
+    Value: !Ref SessionsTable
+  CertificateArn:
+    Value: !Ref AppCert
+    Export:
+      Name: !Sub '${AWS::StackName}-CertificateArn'
+  Domain:
+    Value: !Ref Domain
+  HostedZoneId:
+    Value: !Ref HostedZoneId

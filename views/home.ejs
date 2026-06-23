@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Total Control — Dashboard</title>
+  <link rel="stylesheet" href="/landing.css" />
+  <link rel="stylesheet" href="/home.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <span class="cs-phone">Customer Service: 844.873.4948</span>
+      <nav class="topbar-links">
+        <a href="#" class="lang">EN</a>
+        <span class="who"><%= profile.name || profile.email || profile.nameID %></span>
+        <a href="/logout">Sign Out</a>
+      </nav>
+    </div>
+  </header>
+
+  <header class="mainnav">
+    <div class="container mainnav-inner">
+      <a class="brand" href="/home" aria-label="Total Control home">
+        <span class="brand-mark" aria-hidden="true">TC</span>
+        <span class="brand-text">Total Control<sup>®</sup></span>
+      </a>
+      <nav class="primary-nav" aria-label="Primary">
+        <a href="/home" class="active">Dashboard</a>
+        <a href="/profile">My Profile</a>
+        <a href="#">Equipment</a>
+        <a href="#">Reports</a>
+        <a href="#">Locations</a>
+      </nav>
+      <a href="/logout" class="cta-button">Sign Out</a>
+    </div>
+  </header>
+
+  <section class="welcome">
+    <div class="container welcome-inner">
+      <p class="kicker">Welcome back</p>
+      <h1>Hello, <%= (profile && (profile.name || profile.givenName || profile.email || profile.nameID)) || 'there' %>.</h1>
+      <p class="lede">Your digital profile and account details.</p>
+    </div>
+  </section>
+
+  <main class="container content">
+    <div class="tabs" role="tablist">
+      <button class="tab active" role="tab" data-tab="profile">Digital Profile</button>
+      <button class="tab" role="tab" data-tab="debug">Debug Info</button>
+    </div>
+
+    <%- /* ── Digital Profile panel ── */ '' %>
+    <section id="panel-profile" class="panel active" data-panel="profile" role="tabpanel">
+
+      <% if (notice) { %>
+        <div class="dp-notice dp-notice--<%= notice.type %>"><%= notice.message %></div>
+      <% } %>
+
+      <div class="dp-layout">
+
+        <%- /* ── Editable form ── */ '' %>
+        <div class="dp-edit-col">
+          <h2 class="dp-section-heading">Edit Profile</h2>
+          <form id="dp-form" action="/home/digital-profile" method="post" class="dp-form" novalidate>
+
+            <label class="dp-field">
+              <span class="dp-field-label">Full Name</span>
+              <input
+                type="text"
+                name="name"
+                value="<%= (profile.name || (digitalProfile && digitalProfile.profile && digitalProfile.profile.full_name) || '') %>"
+                maxlength="120"
+                autocomplete="name"
+                placeholder="Your full name"
+              />
+            </label>
+
+            <label class="dp-field">
+              <span class="dp-field-label">Job Title</span>
+              <input
+                type="text"
+                name="job_title"
+                value="<%= (digitalProfile && digitalProfile.profile && digitalProfile.profile.job_title) || '' %>"
+                maxlength="120"
+                autocomplete="organization-title"
+                placeholder="e.g. Senior Engineer"
+              />
+            </label>
+
+            <div class="dp-field">
+              <span class="dp-field-label">Phone</span>
+              <div class="phone-group" role="group" aria-label="Phone number">
+                <div class="phone-country" aria-hidden="true">
+                  <span class="phone-flag" id="dp-flag">🇺🇸</span>
+                  <span class="phone-code">+1</span>
+                  <span class="phone-chevron">▾</span>
+                  <select id="dp-country" name="phone_country" aria-label="Country code" tabindex="0">
+                    <option value="US">🇺🇸 United States (+1)</option>
+                    <option value="CA">🇨🇦 Canada (+1)</option>
+                  </select>
+                </div>
+                <input
+                  id="dp-phone-display"
+                  type="tel"
+                  class="phone-number"
+                  placeholder="(555) 555-5555"
+                  maxlength="14"
+                  autocomplete="tel-national"
+                  aria-label="Phone number"
+                  inputmode="numeric"
+                />
+                <input
+                  type="hidden"
+                  name="phone"
+                  id="dp-phone-value"
+                  value="<%= (digitalProfile && digitalProfile.profile && (digitalProfile.profile.phone || digitalProfile.profile.phone_number)) || '' %>"
+                />
+              </div>
+              <span class="dp-field-hint">US or Canadian 10-digit number</span>
+            </div>
+
+            <div class="dp-form-actions">
+              <button type="submit" class="dp-save-btn">Save changes</button>
+            </div>
+          </form>
+        </div>
+
+        <%- /* ── Read-only digital_profile attributes ── */ '' %>
+        <div class="dp-attrs-col">
+          <h2 class="dp-section-heading">Digital Identity</h2>
+          <% if (digitalProfile && Object.keys(digitalProfile).length > 0) { %>
+            <%
+              // Editable fields that live inside digitalProfile.profile — hide from read-only table
+              var EDIT_PROFILE_KEYS = new Set(['job_title', 'phone', 'phone_number', 'full_name']);
+
+              function humanize(key) {
+                return key.replace(/_/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+              }
+              function display(val) {
+                if (val === null || val === undefined) return '';
+                if (typeof val === 'object') return JSON.stringify(val);
+                return String(val);
+              }
+
+              // Rows from inside digitalProfile.profile (skip editable ones)
+              var profileObj = (digitalProfile.profile && typeof digitalProfile.profile === 'object')
+                ? digitalProfile.profile : {};
+              var profileRows = Object.entries(profileObj).filter(function(e) {
+                return !EDIT_PROFILE_KEYS.has(e[0]);
+              });
+
+              // Rows from digitalProfile top-level (skip JWT claims, skip 'profile' sub-object)
+              var topRows = Object.entries(digitalProfile).filter(function(e) {
+                return !jwtSkip.has(e[0]) && e[0] !== 'profile';
+              });
+
+              var allRows = profileRows.concat(topRows);
+            %>
+            <% if (allRows.length > 0) { %>
+              <dl class="dp-attrs">
+                <% allRows.forEach(function(entry) { %>
+                  <dt><%= humanize(entry[0]) %></dt>
+                  <dd><%= display(entry[1]) %></dd>
+                <% }); %>
+              </dl>
+            <% } else { %>
+              <p class="dp-attrs-empty">All digital profile fields are editable above.</p>
+            <% } %>
+          <% } else { %>
+            <div class="dp-attrs-missing">
+              <p>No <code>digital_profile</code> claim found in this session.</p>
+              <p class="dp-hint">Auth0 must include a <code>digital_profile</code> object claim in the ID token. Check your Auth0 Action or Rule that populates it.</p>
+            </div>
+          <% } %>
+        </div>
+
+      </div><%- /* end dp-layout */ '' %>
+    </section>
+
+    <%- /* ── Debug panel ── */ '' %>
+    <section id="panel-debug" class="panel" data-panel="debug" role="tabpanel" hidden>
+      <h2>Debug Info</h2>
+      <p class="panel-intro">Authentication artifacts for this session.</p>
+
+      <h3>Profile summary</h3>
+      <dl class="kv">
+        <dt>NameID</dt><dd><code><%= profile.nameID || '' %></code></dd>
+        <% if (profile.email) { %><dt>Email</dt><dd><code><%= profile.email %></code></dd><% } %>
+        <% if (profile.nameIDFormat) { %><dt>NameID Format</dt><dd><code><%= profile.nameIDFormat %></code></dd><% } %>
+        <% if (profile._origin) { %><dt>Auth path</dt><dd><code><%= profile._origin %></code></dd><% } %>
+      </dl>
+
+      <h3>Access token (token-exchange result)</h3>
+      <% if (accessToken) { %>
+        <details>
+          <summary>Access Token</summary>
+          <pre class="token"><code><%= accessToken %></code></pre>
+        </details>
+        <details>
+          <summary>Full token response</summary>
+          <pre class="token"><code><%= JSON.stringify(tokenResponse, null, 2) %></code></pre>
+        </details>
+      <% } else if (tokenError) { %>
+        <div class="error-block">
+          <strong>Token exchange failed</strong>
+          <p>HTTP status: <code><%= tokenError.status %></code></p>
+          <details open>
+            <summary>Error response body</summary>
+            <pre class="token"><code><%= typeof tokenError.body === 'string' ? tokenError.body : JSON.stringify(tokenError.body, null, 2) %></code></pre>
+          </details>
+        </div>
+      <% } else { %>
+        <p>No access token available.</p>
+      <% } %>
+
+      <h3>Full SAML / OIDC profile</h3>
+      <details>
+        <summary>profile (all claims)</summary>
+        <pre class="token"><code><%= JSON.stringify(profile, null, 2) %></code></pre>
+      </details>
+    </section>
+  </main>
+
+  <script>
+    (function() {
+      // ── Tab switching ──────────────────────────────────────────────
+      var tabs   = document.querySelectorAll('.tab');
+      var panels = document.querySelectorAll('.panel');
+
+      function activate(name) {
+        tabs.forEach(function(t) { t.classList.toggle('active', t.dataset.tab === name); });
+        panels.forEach(function(p) {
+          var on = p.dataset.panel === name;
+          p.classList.toggle('active', on);
+          if (on) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+        });
+      }
+      tabs.forEach(function(t) { t.addEventListener('click', function() { activate(t.dataset.tab); }); });
+
+      var hash = (location.hash || '').replace('#', '');
+      if (hash === 'debug' || hash === 'profile') activate(hash);
+
+      // ── Phone picker ───────────────────────────────────────────────
+      var countryEl  = document.getElementById('dp-country');
+      var flagEl     = document.getElementById('dp-flag');
+      var displayEl  = document.getElementById('dp-phone-display');
+      var hiddenEl   = document.getElementById('dp-phone-value');
+      var form       = document.getElementById('dp-form');
+
+      var FLAGS = { US: '🇺🇸', CA: '🇨🇦' };
+
+      function digitsOnly(s) { return (s || '').replace(/\D/g, ''); }
+
+      function formatNANP(raw) {
+        var d = digitsOnly(raw).slice(0, 10);
+        if (!d) return '';
+        if (d.length <= 3)  return '(' + d;
+        if (d.length <= 6)  return '(' + d.slice(0,3) + ') ' + d.slice(3);
+        return '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6);
+      }
+
+      // Seed display from hidden value on load
+      (function() {
+        var raw = digitsOnly(hiddenEl.value);
+        if (raw.length === 11 && raw[0] === '1') raw = raw.slice(1);
+        if (raw.length === 10) displayEl.value = formatNANP(raw);
+      })();
+
+      countryEl.addEventListener('change', function() {
+        flagEl.textContent = FLAGS[this.value] || '🇺🇸';
+      });
+
+      displayEl.addEventListener('input', function() {
+        var pos = this.selectionStart;
+        var before = this.value.length;
+        this.value = formatNANP(this.value);
+        var after = this.value.length;
+        // nudge cursor past auto-inserted chars
+        try { this.setSelectionRange(pos + (after - before), pos + (after - before)); } catch(e) {}
+      });
+
+      // Paste: strip formatting, re-apply
+      displayEl.addEventListener('paste', function(e) {
+        e.preventDefault();
+        var pasted = (e.clipboardData || window.clipboardData).getData('text');
+        var d = digitsOnly(pasted);
+        if (d.length === 11 && d[0] === '1') d = d.slice(1);
+        this.value = formatNANP(d);
+      });
+
+      form.addEventListener('submit', function() {
+        var d = digitsOnly(displayEl.value);
+        hiddenEl.value = d.length === 10 ? '+1' + d : displayEl.value;
+      });
+
+      // Inline validation feedback
+      displayEl.addEventListener('blur', function() {
+        var d = digitsOnly(this.value);
+        this.setCustomValidity(d && d.length !== 10 ? 'Please enter a 10-digit US or Canadian phone number.' : '');
+        this.reportValidity();
+      });
+    })();
+  </script>
+</body>
+</html>

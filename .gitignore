@@ -1,3 +1,15 @@
+# Build artifacts
+.build/
+lambda.zip
+
+# Secrets / certificates — never commit private keys
+*.pem
+
+# Debug / scratch output
+*.out
+test-layout.js
+test-signup.js
+
 # Logs
 logs
 *.log

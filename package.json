@@ -1,0 +1,29 @@
+{
+  "name": "b2b-saml-sp-demo",
+  "version": "0.1.0",
+  "description": "SAML SP-initiated SSO demo against Auth0, with custom OAuth 2.0 token exchange after login",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "package": "rm -rf .build && mkdir -p .build && cp -r server.js lambda.js views public package.json package-lock.json fiscal-psft.pem fiscal-psft_cic-demo-platform_auth0app_com-metadata.xml .build/ && cd .build && npm ci --omit=dev && cd .. && (cd .build && zip -qr ../lambda.zip .) && echo 'Built lambda.zip'"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.658.0",
+    "@node-saml/passport-saml": "^5.0.1",
+    "axios": "^1.7.7",
+    "connect-dynamodb": "^3.0.5",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "fast-xml-parser": "^4.5.0",
+    "passport": "^0.7.0",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.60.0"
+  }
+}

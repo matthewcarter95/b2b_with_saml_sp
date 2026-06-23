@@ -1,0 +1,1888 @@
+{
+  "version": "4.0.0",
+  "form": {
+    "name": "KYB - Onboarding",
+    "languages": {
+      "primary": "en"
+    },
+    "nodes": [
+      {
+        "id": "step_fHQK",
+        "type": "STEP",
+        "coordinates": {
+          "x": 1062,
+          "y": -1231
+        },
+        "config": {
+          "components": [
+            {
+              "id": "rich_text_IquI",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<h2>Help us verify your business</h2><p>We want to learn more about your company so that we can validate and protect your account.</p>"
+              }
+            },
+            {
+              "id": "company_name",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Business Name",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "text_AP_Contact_Name",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "A/P Contact Name",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "text_DBA",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "DBA (if applicable)",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "choice_OccupancyStatus",
+              "category": "FIELD",
+              "type": "CHOICE",
+              "label": "Occupancy Status",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "Own",
+                    "value": "Own"
+                  },
+                  {
+                    "label": "Rent",
+                    "value": "Rent"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "dropdown_HPqh",
+              "category": "FIELD",
+              "type": "DROPDOWN",
+              "label": "State of Incorporation",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "CA",
+                    "value": "CA"
+                  },
+                  {
+                    "label": "FL",
+                    "value": "FL"
+                  },
+                  {
+                    "label": "NY",
+                    "value": "NY"
+                  },
+                  {
+                    "label": "TX",
+                    "value": "TX"
+                  },
+                  {
+                    "label": "Other",
+                    "value": "Other"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "text_federal_tax_id",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Tax ID#",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false,
+                "default_value": "3362806",
+                "placeholder": "3362806"
+              }
+            },
+            {
+              "id": "next_button_8tQq",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "flow_BizVerify"
+        }
+      },
+      {
+        "id": "flow_Z4eS",
+        "type": "FLOW",
+        "coordinates": {
+          "x": 4455,
+          "y": -928
+        },
+        "config": {
+          "flow_id": "#FLOW-1#",
+          "next_node": "$ending"
+        }
+      },
+      {
+        "id": "step_w22U",
+        "type": "STEP",
+        "coordinates": {
+          "x": -654,
+          "y": -468
+        },
+        "alias": "SalesRep",
+        "config": {
+          "components": [
+            {
+              "id": "image_KVmr",
+              "category": "BLOCK",
+              "type": "IMAGE",
+              "config": {
+                "src": "https://img.logo.dev/unitedrentals.com?token=pk_VxDwLGYDQZ6ccc08gFW5Rg",
+                "position": "CENTER",
+                "height": 115
+              }
+            },
+            {
+              "id": "custom_gqKO",
+              "category": "FIELD",
+              "type": "CUSTOM",
+              "label": "Have you worked with a URI employee? If so, please select their name from this drop-down.",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "schema": {
+                  "type": "string",
+                  "title": "Select Rep"
+                },
+                "code": "function(context) {\n  console.log(\"1. Initializing component...\");\n  console.log(\"1a. Context received:\", context);\n\n  var container = document.createElement('div');\n  container.className = 'my-custom-component';\n  // Ensure the container has height and a border so we can confirm it mounted\n  container.style.cssText = \"display: block !important; min-height: 50px !important; width: 100% !important; border: 2px solid #635dff !important; padding: 5px !important; visibility: visible !important; opacity: 1 !important; position: relative !important; background-color: white !important; z-index: 1 !important;\";\n\n  var fieldId = context.custom.getFieldId();\n  console.log(\"1b. Field ID:\", fieldId);\n\n  var sel = document.createElement('select');\n  sel.name = fieldId; // Set the name to the field ID\n  sel.id = fieldId; // Set the id to the field ID\n  sel.style.cssText = \"width: 100% !important; height: 44px !important; padding: 10px !important; border: 1px solid #ccc !important; background: #fff !important; color: #000 !important; display: block !important; visibility: visible !important; opacity: 1 !important; font-size: 16px !important; position: relative !important; z-index: 2 !important;\";\n  sel.innerHTML = '<option value=\"\">Loading products...</option>';\n  container.appendChild(sel);\n\n  console.log(\"1c. Select created with name/id:\", fieldId);\n\n  fetch('https://n5je6mqzsskozc32cqdfetl42q0augte.lambda-url.us-east-1.on.aws/api/ucp/products')\n    .then(function(res) {\n      console.log(\"2. Response:\", res.status);\n      return res.json();\n    })\n    .then(function(data) {\n      console.log(\"3. Full API Response:\", JSON.stringify(data, null, 2));\n      console.log(\"3a. Products count:\", data.count);\n      console.log(\"3b. Products array:\", data.products);\n      console.log(\"3c. Is array?\", Array.isArray(data.products));\n\n      sel.innerHTML = '<option value=\"\">-- Select a Product --</option>';\n\n      if (data.success && data.products && Array.isArray(data.products)) {\n        console.log(\"3d. About to render\", data.products.length, \"products\");\n        data.products.forEach(function(p, index) {\n          console.log(\"3e. Rendering product\", index, \":\", p.title, p.price);\n          var o = document.createElement('option');\n          o.value = p.id;\n          o.textContent = p.title + \" ($\" + p.price.value + \")\";\n          sel.appendChild(o);\n        });\n        console.log(\"4. Rendering complete. Select now has\", sel.options.length, \"options\");\n      } else {\n        console.error(\"3d. Failed validation - success:\", data.success, \"has products:\", !!data.products, \"is array:\", Array.isArray(data.products));\n      }\n    })\n    .catch(function(err) {\n      console.error(\"Fetch failed:\", err);\n      sel.innerHTML = '<option>Error loading products</option>';\n    });\n\n  sel.addEventListener('change', function(e) {\n    var selectedValue = e.target.value;\n    console.log(\"12. Product selected:\", selectedValue);\n    console.log(\"13. Select element value:\", sel.value);\n    console.log(\"14. Select element name:\", sel.name);\n\n    // Verify form values (it's a Promise)\n    setTimeout(function() {\n      context.form.getValues().then(function(formValues) {\n        console.log(\"15. All form values:\", formValues);\n        console.log(\"16. custom_oECQ in formValues:\", formValues && formValues[fieldId]);\n      });\n    }, 100); // Small delay to let Auth0 process the change\n  });\n\n  // Debug: Check if container gets mounted to the DOM\n  setTimeout(function() {\n    console.log(\"5. Container in DOM?\", document.body.contains(container));\n    console.log(\"6. Container styles:\", window.getComputedStyle(container).display, window.getComputedStyle(container).visibility);\n    console.log(\"7. Container parent:\", container.parentElement);\n    if (container.parentElement) {\n      console.log(\"8. Parent styles:\", window.getComputedStyle(container.parentElement).display, window.getComputedStyle(container.parentElement).visibility);\n    } else {\n      // Try to manually mount if Auth0 didn't do it\n      console.log(\"9. Attempting manual mount...\");\n      var afCustom = document.querySelector('.af-custom');\n      if (afCustom) {\n        console.log(\"10. Found .af-custom element, mounting manually\");\n        afCustom.appendChild(container);\n      } else {\n        console.error(\"11. Could not find .af-custom element\");\n      }\n    }\n\n    // Test getValue after mount\n    console.log(\"17. Testing context.custom.getValue():\", context.custom.getValue());\n  }, 1000);\n\n  // Also check for Auth0 Forms errors\n  console.log(\"Component function executed, returning container\");\n\n  return {\n    element: container,\n    getValue: function() {\n      console.log(\"getValue() called, returning:\", sel.value);\n      return sel.value;\n    }\n  };\n}\n"
+              }
+            },
+            {
+              "id": "next_button_IgKL",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            },
+            {
+              "id": "next_button_iAfE",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "I'm not working with a URI Employee"
+              }
+            }
+          ],
+          "next_node": "step_uo9j"
+        }
+      },
+      {
+        "id": "step_uo9j",
+        "type": "STEP",
+        "coordinates": {
+          "x": -74,
+          "y": -468
+        },
+        "config": {
+          "components": [
+            {
+              "id": "image_wIi6",
+              "category": "BLOCK",
+              "type": "IMAGE",
+              "config": {
+                "src": "https://img.logo.dev/unitedrentals.com?token=pk_VxDwLGYDQZ6ccc08gFW5Rg",
+                "position": "CENTER",
+                "height": 115
+              }
+            },
+            {
+              "id": "rich_text_CsCu",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<h2>Country of Incorporation</h2><p>Tell us your country where you are incorporated so that we can tailor the onboarding experience.</p>"
+              }
+            },
+            {
+              "id": "dropdown_tFX1",
+              "category": "FIELD",
+              "type": "DROPDOWN",
+              "label": "Company Country",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "United States",
+                    "value": "United States"
+                  },
+                  {
+                    "label": "Canada",
+                    "value": "Canada "
+                  },
+                  {
+                    "label": "Afghanistan",
+                    "value": "Afghanistan"
+                  },
+                  {
+                    "label": "Albania",
+                    "value": "Albania"
+                  },
+                  {
+                    "label": "Algeria",
+                    "value": "Algeria"
+                  },
+                  {
+                    "label": "Andorra",
+                    "value": "Andorra"
+                  },
+                  {
+                    "label": "Angola",
+                    "value": "Angola"
+                  },
+                  {
+                    "label": "Antigua and Barbuda",
+                    "value": "Antigua and Barbuda"
+                  },
+                  {
+                    "label": "Argentina",
+                    "value": "Argentina"
+                  },
+                  {
+                    "label": "Armenia",
+                    "value": "Armenia"
+                  },
+                  {
+                    "label": "Australia",
+                    "value": "Australia"
+                  },
+                  {
+                    "label": "Austria",
+                    "value": "Austria"
+                  },
+                  {
+                    "label": "Azerbaijan",
+                    "value": "Azerbaijan"
+                  },
+                  {
+                    "label": "Bahamas",
+                    "value": "Bahamas"
+                  },
+                  {
+                    "label": "Bahrain",
+                    "value": "Bahrain"
+                  },
+                  {
+                    "label": "Bangladesh",
+                    "value": "Bangladesh"
+                  },
+                  {
+                    "label": "Barbados",
+                    "value": "Barbados "
+                  },
+                  {
+                    "label": "Belarus",
+                    "value": "Belarus"
+                  },
+                  {
+                    "label": "Belgium",
+                    "value": "Belgium"
+                  },
+                  {
+                    "label": "Belize",
+                    "value": "Belize "
+                  },
+                  {
+                    "label": "Benin",
+                    "value": "Benin"
+                  },
+                  {
+                    "label": "Bhutan",
+                    "value": "Bhutan"
+                  },
+                  {
+                    "label": "Bolivia",
+                    "value": "Bolivia"
+                  },
+                  {
+                    "label": "Bosnia and Herzegovina",
+                    "value": "Bosnia and Herzegovina "
+                  },
+                  {
+                    "label": "Botswana",
+                    "value": "Botswana"
+                  },
+                  {
+                    "label": "Brazil",
+                    "value": "Brazil"
+                  },
+                  {
+                    "label": "Brunei",
+                    "value": "Brunei"
+                  },
+                  {
+                    "label": "Bulgaria",
+                    "value": "Bulgaria"
+                  },
+                  {
+                    "label": "Burkina Faso",
+                    "value": "Burkina Faso "
+                  },
+                  {
+                    "label": "Burundi",
+                    "value": "Burundi"
+                  },
+                  {
+                    "label": "Cambodia",
+                    "value": "Cambodia"
+                  },
+                  {
+                    "label": "Cameroon",
+                    "value": "Cameroon"
+                  },
+                  {
+                    "label": "Cape Verde",
+                    "value": "Cape Verde"
+                  },
+                  {
+                    "label": "Central African Republic",
+                    "value": "Central African Republic"
+                  },
+                  {
+                    "label": "Chad",
+                    "value": "Chad"
+                  },
+                  {
+                    "label": "Chile",
+                    "value": "Chile"
+                  },
+                  {
+                    "label": "China",
+                    "value": "China"
+                  },
+                  {
+                    "label": "Colombia",
+                    "value": "Colombia"
+                  },
+                  {
+                    "label": "Comoros",
+                    "value": "Comoros"
+                  },
+                  {
+                    "label": "Congo",
+                    "value": "Congo"
+                  },
+                  {
+                    "label": "Congo",
+                    "value": "Congo"
+                  },
+                  {
+                    "label": "Costa Rica",
+                    "value": "Costa Rica"
+                  },
+                  {
+                    "label": "Croatia",
+                    "value": "Croatia"
+                  },
+                  {
+                    "label": "Cuba",
+                    "value": "Cuba"
+                  },
+                  {
+                    "label": "Cyprus",
+                    "value": "Cyprus"
+                  },
+                  {
+                    "label": "Czech Republic",
+                    "value": "Czech Republic "
+                  },
+                  {
+                    "label": "Denmark",
+                    "value": "Denmark"
+                  },
+                  {
+                    "label": "Djibouti",
+                    "value": "Djibouti"
+                  },
+                  {
+                    "label": "Dominica",
+                    "value": "Dominica"
+                  },
+                  {
+                    "label": "Dominican Republic",
+                    "value": "Dominican Republic "
+                  },
+                  {
+                    "label": "East Timor",
+                    "value": "East Timor"
+                  },
+                  {
+                    "label": "Ecuador",
+                    "value": "Ecuador"
+                  },
+                  {
+                    "label": "Egypt",
+                    "value": "Egypt"
+                  },
+                  {
+                    "label": "El Salvador",
+                    "value": "El Salvador"
+                  },
+                  {
+                    "label": "Equatorial Guinea",
+                    "value": "Equatorial Guinea"
+                  },
+                  {
+                    "label": "Eritrea",
+                    "value": "Eritrea"
+                  },
+                  {
+                    "label": "Estonia",
+                    "value": "Estonia"
+                  },
+                  {
+                    "label": "Eswatini",
+                    "value": "Eswatini"
+                  },
+                  {
+                    "label": "Ethiopia",
+                    "value": "Ethiopia"
+                  },
+                  {
+                    "label": "Fiji",
+                    "value": "Fiji"
+                  },
+                  {
+                    "label": "Finland",
+                    "value": "Finland"
+                  },
+                  {
+                    "label": "France",
+                    "value": "France"
+                  },
+                  {
+                    "label": "Gabon",
+                    "value": "Gabon"
+                  },
+                  {
+                    "label": "Gambia",
+                    "value": "Gambia"
+                  },
+                  {
+                    "label": "Georgia",
+                    "value": "Georgia "
+                  },
+                  {
+                    "label": "Germany",
+                    "value": "Germany"
+                  },
+                  {
+                    "label": "Ghana",
+                    "value": "Ghana"
+                  },
+                  {
+                    "label": "Greece",
+                    "value": "Greece"
+                  },
+                  {
+                    "label": "Grenada",
+                    "value": "Grenada "
+                  },
+                  {
+                    "label": "Guatemala",
+                    "value": "Guatemala"
+                  },
+                  {
+                    "label": "Guinea",
+                    "value": "Guinea"
+                  },
+                  {
+                    "label": "Guinea-Bissau",
+                    "value": "Guinea-Bissau"
+                  },
+                  {
+                    "label": "Guyana",
+                    "value": "Guyana"
+                  },
+                  {
+                    "label": "Haiti",
+                    "value": "Haiti"
+                  },
+                  {
+                    "label": "Honduras",
+                    "value": "Honduras"
+                  },
+                  {
+                    "label": "Hungary",
+                    "value": "Hungary "
+                  },
+                  {
+                    "label": "Iceland",
+                    "value": "Iceland "
+                  },
+                  {
+                    "label": "India",
+                    "value": "India"
+                  },
+                  {
+                    "label": "Indonesia",
+                    "value": "Indonesia"
+                  },
+                  {
+                    "label": "Iran",
+                    "value": "Iran"
+                  },
+                  {
+                    "label": "Iraq",
+                    "value": "Iraq"
+                  },
+                  {
+                    "label": "Ireland",
+                    "value": "Ireland "
+                  },
+                  {
+                    "label": "Israel",
+                    "value": "Israel"
+                  },
+                  {
+                    "label": "Italy",
+                    "value": "Italy"
+                  },
+                  {
+                    "label": "Ivory Coast",
+                    "value": "Ivory Coast"
+                  },
+                  {
+                    "label": "Jamaica",
+                    "value": "Jamaica "
+                  },
+                  {
+                    "label": "Japan",
+                    "value": "Japan "
+                  },
+                  {
+                    "label": "Jordan",
+                    "value": "Jordan"
+                  },
+                  {
+                    "label": "Kazakhstan",
+                    "value": "Kazakhstan"
+                  },
+                  {
+                    "label": "Kenya",
+                    "value": "Kenya"
+                  },
+                  {
+                    "label": "Kiribati",
+                    "value": "Kiribati"
+                  },
+                  {
+                    "label": "Korea",
+                    "value": "Korea"
+                  },
+                  {
+                    "label": "Korea",
+                    "value": "Korea"
+                  },
+                  {
+                    "label": "Kuwait",
+                    "value": "Kuwait"
+                  },
+                  {
+                    "label": "Kyrgyzstan",
+                    "value": "Kyrgyzstan"
+                  },
+                  {
+                    "label": "Laos",
+                    "value": "Laos"
+                  },
+                  {
+                    "label": "Latvia",
+                    "value": "Latvia"
+                  },
+                  {
+                    "label": "Lebanon",
+                    "value": "Lebanon"
+                  },
+                  {
+                    "label": "Lesotho",
+                    "value": "Lesotho"
+                  },
+                  {
+                    "label": "Liberia",
+                    "value": "Liberia"
+                  },
+                  {
+                    "label": "Libya",
+                    "value": "Libya"
+                  },
+                  {
+                    "label": "Liechtenstein",
+                    "value": "Liechtenstein"
+                  },
+                  {
+                    "label": "Lithuania",
+                    "value": "Lithuania"
+                  },
+                  {
+                    "label": "Luxembourg",
+                    "value": "Luxembourg"
+                  },
+                  {
+                    "label": "Madagascar",
+                    "value": "Madagascar"
+                  },
+                  {
+                    "label": "Malawi",
+                    "value": "Malawi"
+                  },
+                  {
+                    "label": "Malaysia",
+                    "value": "Malaysia "
+                  },
+                  {
+                    "label": "Maldives",
+                    "value": "Maldives"
+                  },
+                  {
+                    "label": "Mali",
+                    "value": "Mali"
+                  },
+                  {
+                    "label": "Malta",
+                    "value": "Malta"
+                  },
+                  {
+                    "label": "Marshall Islands",
+                    "value": "Marshall Islands"
+                  },
+                  {
+                    "label": "Mauritania",
+                    "value": "Mauritania"
+                  },
+                  {
+                    "label": "Mauritius",
+                    "value": "Mauritius"
+                  },
+                  {
+                    "label": "Mexico",
+                    "value": "Mexico"
+                  },
+                  {
+                    "label": "Micronesia",
+                    "value": "Micronesia"
+                  },
+                  {
+                    "label": "Moldova",
+                    "value": "Moldova"
+                  },
+                  {
+                    "label": "Monaco",
+                    "value": "Monaco"
+                  },
+                  {
+                    "label": "Mongolia",
+                    "value": "Mongolia "
+                  },
+                  {
+                    "label": "Montenegro",
+                    "value": "Montenegro "
+                  },
+                  {
+                    "label": "Morocco",
+                    "value": "Morocco"
+                  },
+                  {
+                    "label": "Mozambique",
+                    "value": "Mozambique"
+                  },
+                  {
+                    "label": "Myanmar",
+                    "value": "Myanmar"
+                  },
+                  {
+                    "label": "Namibia",
+                    "value": "Namibia"
+                  },
+                  {
+                    "label": "Nauru",
+                    "value": "Nauru"
+                  },
+                  {
+                    "label": "Nepal",
+                    "value": "Nepal"
+                  },
+                  {
+                    "label": "Netherlands",
+                    "value": "Netherlands"
+                  },
+                  {
+                    "label": "New Zealand",
+                    "value": "New Zealand "
+                  },
+                  {
+                    "label": "Nicaragua",
+                    "value": "Nicaragua"
+                  },
+                  {
+                    "label": "Niger",
+                    "value": "Niger"
+                  },
+                  {
+                    "label": "Nigeria",
+                    "value": "Nigeria"
+                  },
+                  {
+                    "label": "North Macedonia",
+                    "value": "North Macedonia"
+                  },
+                  {
+                    "label": "Norway",
+                    "value": "Norway"
+                  },
+                  {
+                    "label": "Oman",
+                    "value": "Oman"
+                  },
+                  {
+                    "label": "Pakistan",
+                    "value": "Pakistan"
+                  },
+                  {
+                    "label": "Palau",
+                    "value": "Palau"
+                  },
+                  {
+                    "label": "Palestine",
+                    "value": "Palestine"
+                  },
+                  {
+                    "label": "Panama",
+                    "value": "Panama"
+                  },
+                  {
+                    "label": "Papua New Guinea",
+                    "value": "Papua New Guinea"
+                  },
+                  {
+                    "label": "Paraguay",
+                    "value": "Paraguay"
+                  },
+                  {
+                    "label": "Peru",
+                    "value": "Peru"
+                  },
+                  {
+                    "label": "Philippines",
+                    "value": "Philippines"
+                  },
+                  {
+                    "label": "Poland",
+                    "value": "Poland"
+                  },
+                  {
+                    "label": "Portugal",
+                    "value": "Portugal"
+                  },
+                  {
+                    "label": "Qatar",
+                    "value": "Qatar"
+                  },
+                  {
+                    "label": "Romania",
+                    "value": "Romania "
+                  },
+                  {
+                    "label": "Russia",
+                    "value": "Russia"
+                  },
+                  {
+                    "label": "Rwanda",
+                    "value": "Rwanda"
+                  },
+                  {
+                    "label": "Saint Kitts and Nevis",
+                    "value": "Saint Kitts and Nevis"
+                  },
+                  {
+                    "label": "Saint Lucia",
+                    "value": "Saint Lucia "
+                  },
+                  {
+                    "label": "Saint Vincent and the Grenadines",
+                    "value": "Saint Vincent and the Grenadines "
+                  },
+                  {
+                    "label": "Samoa",
+                    "value": "Samoa"
+                  },
+                  {
+                    "label": "San Marino",
+                    "value": "San Marino"
+                  },
+                  {
+                    "label": "Saudi Arabia",
+                    "value": "Saudi Arabia"
+                  },
+                  {
+                    "label": "Senegal",
+                    "value": "Senegal"
+                  },
+                  {
+                    "label": "Serbia",
+                    "value": "Serbia"
+                  },
+                  {
+                    "label": "Seychelles",
+                    "value": "Seychelles"
+                  },
+                  {
+                    "label": "Sierra Leone",
+                    "value": "Sierra Leone"
+                  },
+                  {
+                    "label": "Singapore",
+                    "value": "Singapore"
+                  },
+                  {
+                    "label": "Slovakia",
+                    "value": "Slovakia"
+                  },
+                  {
+                    "label": "Slovenia",
+                    "value": "Slovenia"
+                  },
+                  {
+                    "label": "Solomon Islands",
+                    "value": "Solomon Islands "
+                  },
+                  {
+                    "label": "Somalia",
+                    "value": "Somalia"
+                  },
+                  {
+                    "label": "South Africa",
+                    "value": "South Africa"
+                  },
+                  {
+                    "label": "South Sudan",
+                    "value": "South Sudan"
+                  },
+                  {
+                    "label": "Spain",
+                    "value": "Spain"
+                  },
+                  {
+                    "label": "Sri Lanka",
+                    "value": "Sri Lanka"
+                  },
+                  {
+                    "label": "Sudan",
+                    "value": "Sudan"
+                  },
+                  {
+                    "label": "Suriname",
+                    "value": "Suriname"
+                  },
+                  {
+                    "label": "Sweden",
+                    "value": "Sweden"
+                  },
+                  {
+                    "label": "Switzerland",
+                    "value": "Switzerland"
+                  },
+                  {
+                    "label": "Syria",
+                    "value": "Syria"
+                  },
+                  {
+                    "label": "Tajikistan",
+                    "value": "Tajikistan"
+                  },
+                  {
+                    "label": "Tanzania",
+                    "value": "Tanzania"
+                  },
+                  {
+                    "label": "Thailand",
+                    "value": "Thailand"
+                  },
+                  {
+                    "label": "Togo",
+                    "value": "Togo"
+                  },
+                  {
+                    "label": "Tonga",
+                    "value": "Tonga"
+                  },
+                  {
+                    "label": "Trinidad and Tobago",
+                    "value": "Trinidad and Tobago"
+                  },
+                  {
+                    "label": "Tunisia",
+                    "value": "Tunisia"
+                  },
+                  {
+                    "label": "Turkey",
+                    "value": "Turkey"
+                  },
+                  {
+                    "label": "Turkmenistan",
+                    "value": "Turkmenistan "
+                  },
+                  {
+                    "label": "Tuvalu",
+                    "value": "Tuvalu "
+                  },
+                  {
+                    "label": "Uganda",
+                    "value": "Uganda"
+                  },
+                  {
+                    "label": "Ukraine",
+                    "value": "Ukraine "
+                  },
+                  {
+                    "label": "United Arab Emirates",
+                    "value": "United Arab Emirates "
+                  },
+                  {
+                    "label": "United Kingdom",
+                    "value": "United Kingdom"
+                  },
+                  {
+                    "label": "Uruguay",
+                    "value": "Uruguay"
+                  },
+                  {
+                    "label": "Uzbekistan",
+                    "value": "Uzbekistan"
+                  },
+                  {
+                    "label": "Vanuatu",
+                    "value": "Vanuatu"
+                  },
+                  {
+                    "label": "Vatican City",
+                    "value": "Vatican City"
+                  },
+                  {
+                    "label": "Venezuela",
+                    "value": "Venezuela"
+                  },
+                  {
+                    "label": "Vietnam",
+                    "value": "Vietnam"
+                  },
+                  {
+                    "label": "Yemen",
+                    "value": "Yemen"
+                  },
+                  {
+                    "label": "Zambia",
+                    "value": "Zambia"
+                  },
+                  {
+                    "label": "Zimbabwe",
+                    "value": "Zimbabwe"
+                  },
+                  {
+                    "label": "Abkhazia",
+                    "value": "Abkhazia"
+                  },
+                  {
+                    "label": "Artsakh",
+                    "value": "Artsakh"
+                  },
+                  {
+                    "label": "Cook Islands",
+                    "value": "Cook Islands "
+                  },
+                  {
+                    "label": "Kosovo",
+                    "value": "Kosovo"
+                  },
+                  {
+                    "label": "Niue",
+                    "value": "Niue "
+                  },
+                  {
+                    "label": "Northern Cyprus",
+                    "value": "Northern Cyprus"
+                  },
+                  {
+                    "label": "Sahrawi Arab Democratic Republic",
+                    "value": "Sahrawi Arab Democratic Republic "
+                  },
+                  {
+                    "label": "Somaliland",
+                    "value": "Somaliland"
+                  },
+                  {
+                    "label": "South Ossetia",
+                    "value": "South Ossetia"
+                  },
+                  {
+                    "label": "Taiwan",
+                    "value": "Taiwan"
+                  },
+                  {
+                    "label": "Transnistria",
+                    "value": "Transnistria"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "next_button_Es7E",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "router_JfJj"
+        }
+      },
+      {
+        "id": "router_JfJj",
+        "type": "ROUTER",
+        "coordinates": {
+          "x": 540,
+          "y": -359
+        },
+        "alias": "CountryOfIncorporation",
+        "config": {
+          "rules": [
+            {
+              "id": "id_1768974149763",
+              "alias": "US",
+              "condition": {
+                "operands": [
+                  {
+                    "operands": [
+                      "{{fields.dropdown_tFX1}}",
+                      "United"
+                    ],
+                    "operator": "STARTS_WITH"
+                  }
+                ],
+                "operator": "AND"
+              },
+              "next_node": "step_fHQK"
+            },
+            {
+              "id": "id_9820097809549",
+              "alias": "Canada",
+              "condition": {
+                "operands": [
+                  {
+                    "operands": [
+                      "{{fields.dropdown_tFX1}}",
+                      "Canada "
+                    ],
+                    "operator": "EQ"
+                  }
+                ],
+                "operator": "AND"
+              },
+              "next_node": "step_wFoG"
+            }
+          ],
+          "fallback": "$ending"
+        }
+      },
+      {
+        "id": "step_wFoG",
+        "type": "STEP",
+        "coordinates": {
+          "x": 1082,
+          "y": -243
+        },
+        "config": {
+          "components": [
+            {
+              "id": "rich_text_QPii",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<h2>Canadian Business Information</h2><p>We want to learn more about your company so that we can validate and protect your account.</p>"
+              }
+            },
+            {
+              "id": "canadian_company_name",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Company legal name",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "text_EPNP",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "A/P Contact Name",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "text_sBhE",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "DBA (if applicable) (copy)",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "choice_SWzG",
+              "category": "FIELD",
+              "type": "CHOICE",
+              "label": "Occupancy Status",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "Own",
+                    "value": "Own"
+                  },
+                  {
+                    "label": "Rent",
+                    "value": "Rent"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "dropdown_placeOfBiz",
+              "category": "FIELD",
+              "type": "DROPDOWN",
+              "label": "Jurisdiction of Incorporation",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "Ontario",
+                    "value": "Ontario"
+                  },
+                  {
+                    "label": "British Columbia",
+                    "value": "BC"
+                  },
+                  {
+                    "label": "Alberta",
+                    "value": "Alberta"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "text_canadianBusinessNumber",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Federal Business Number ",
+              "hint": "<p>The 9-digit number issued by the Canada Revenue Agency</p>",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "next_button_x7Im",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "flow_wqXu"
+        }
+      },
+      {
+        "id": "step_NumU",
+        "type": "STEP",
+        "coordinates": {
+          "x": 3132,
+          "y": -527
+        },
+        "alias": "Owner",
+        "config": {
+          "components": [
+            {
+              "id": "text_iEo0",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Title",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "tel_f0PS",
+              "category": "FIELD",
+              "type": "TEL",
+              "label": "Phone",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "country_picker": true
+              }
+            },
+            {
+              "id": "text_SSN",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "SSN / SIN",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "multiline": false,
+                "min_length": 10,
+                "max_length": 12
+              }
+            },
+            {
+              "id": "date_tpUA",
+              "category": "FIELD",
+              "type": "DATE",
+              "label": "Birthday",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "format": "DATE"
+              }
+            },
+            {
+              "id": "next_button_YF8C",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "$ending"
+        }
+      },
+      {
+        "id": "step_89Rw",
+        "type": "STEP",
+        "coordinates": {
+          "x": 3817,
+          "y": -1115
+        },
+        "alias": "New step",
+        "config": {
+          "components": [
+            {
+              "id": "choice_JyKu",
+              "category": "FIELD",
+              "type": "CHOICE",
+              "label": "Do you require a purchase order number on each invoice?",
+              "hint": "<p>If Yes, equipment will not be released unless provided.\t</p>",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "Yes",
+                    "value": "Yes"
+                  },
+                  {
+                    "label": "No",
+                    "value": "No"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "choice_kJWx",
+              "category": "FIELD",
+              "type": "CHOICE",
+              "label": "Do you require a monthly statement?",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "Yes",
+                    "value": "Yes"
+                  },
+                  {
+                    "label": "No",
+                    "value": "No"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "next_button_H3gT",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "flow_Z4eS"
+        }
+      },
+      {
+        "id": "flow_wqXu",
+        "type": "FLOW",
+        "coordinates": {
+          "x": 2916,
+          "y": -1084
+        },
+        "alias": "Create Org in Auth0",
+        "config": {
+          "flow_id": "#FLOW-2#",
+          "next_node": "step_89Rw"
+        }
+      },
+      {
+        "id": "flow_BizVerify",
+        "type": "FLOW",
+        "coordinates": {
+          "x": 1741,
+          "y": -1189
+        },
+        "alias": "BizVerify",
+        "config": {
+          "flow_id": "#FLOW-3#",
+          "next_node": "flow_wqXu"
+        }
+      },
+      {
+        "id": "router_jCIY",
+        "type": "ROUTER",
+        "coordinates": {
+          "x": 2190,
+          "y": -1369
+        },
+        "alias": "EvaluateNameVsMatch",
+        "config": {
+          "rules": [
+            {
+              "id": "id_3555331998590",
+              "alias": "Low Match on Name",
+              "condition": {
+                "operands": [
+                  {
+                    "operands": [
+                      "{{store.highMatch}}",
+                      "false"
+                    ],
+                    "operator": "STARTS_WITH"
+                  }
+                ],
+                "operator": "AND"
+              },
+              "next_node": "step_aEMv"
+            }
+          ],
+          "fallback": "step_aEMv"
+        }
+      },
+      {
+        "id": "step_aEMv",
+        "type": "STEP",
+        "coordinates": {
+          "x": 2501,
+          "y": -1820
+        },
+        "alias": "New step",
+        "config": {
+          "components": [
+            {
+              "id": "rich_text_9Wy3",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<p>We didn't find an exact match for the business that you entered: {{fields.company_name}}. The business registered with the number {{fields.text_federal_tax_id}} is {{vars.companyName}}. Select \"Continue if you accept this Business name, or Back if you need to update your Tax ID#.</p><p></p><p>Match high?{{actions.http_request_S574.body.output.highMatch}}</p>"
+              }
+            },
+            {
+              "id": "next_button_5y7U",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            },
+            {
+              "id": "previous_button_ZA8Z",
+              "category": "BLOCK",
+              "type": "PREVIOUS_BUTTON",
+              "config": {
+                "text": "Back"
+              }
+            }
+          ],
+          "next_node": "flow_wqXu"
+        }
+      }
+    ],
+    "start": {
+      "hidden_fields": [
+        {
+          "key": "state"
+        }
+      ],
+      "next_node": "step_w22U",
+      "coordinates": {
+        "x": -1021,
+        "y": -293
+      }
+    },
+    "ending": {
+      "resume_flow": true,
+      "coordinates": {
+        "x": 4821,
+        "y": -178
+      }
+    }
+  },
+  "flows": {
+    "#FLOW-1#": {
+      "name": "Update KYB details",
+      "actions": [
+        {
+          "id": "http_request_eD55",
+          "alias": "Submit Credit Check",
+          "type": "HTTP",
+          "action": "SEND_REQUEST",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "connection_id": "#CONN-1#",
+            "method": "POST",
+            "url": "https://ueea43i7kdflq2vog7b2zz22mi0jecez.lambda-url.us-east-1.on.aws/",
+            "payload": {
+              "user_identifier": "{{context.user.email}}"
+            },
+            "content_type": "JSON"
+          }
+        },
+        {
+          "id": "update_user_XQPS",
+          "type": "AUTH0",
+          "action": "UPDATE_USER",
+          "allow_failure": true,
+          "mask_output": false,
+          "params": {
+            "connection_id": "#CONN-2#",
+            "user_id": "{{context.user.user_id}}",
+            "changes": {
+              "app_metadata": {
+                "Sales Rep": "{{fields.custom_gqKO}}",
+                "orgs_registered": [
+                  "{{fields.company_name}}"
+                ],
+                "country_corporation": "{{fields.dropdown_tFX1}}",
+                "credit_applications_filed": [
+                  "{{actions.http_request_eD55.body.loyaltyId}}"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "#FLOW-2#": {
+      "name": "Create Organization",
+      "actions": [
+        {
+          "id": "custom_api_request_Mq13",
+          "alias": "Get Org by name",
+          "type": "AUTH0",
+          "action": "SEND_REQUEST",
+          "allow_failure": true,
+          "mask_output": false,
+          "params": {
+            "connection_id": "#CONN-3#",
+            "method": "GET",
+            "pathname": "/api/v2/organizations/name/{{vars.companyName}}"
+          }
+        },
+        {
+          "id": "if_org_not_found",
+          "type": "FLOW",
+          "action": "BOOLEAN_CONDITION",
+          "allow_failure": true,
+          "mask_output": false,
+          "params": {
+            "if": {
+              "operands": [
+                {
+                  "operands": [
+                    "{{actions.custom_api_request_Mq13.status}}",
+                    "404"
+                  ],
+                  "operator": "EQ"
+                }
+              ],
+              "operator": "AND"
+            },
+            "then": [
+              {
+                "id": "custom_api_request_i4lZ",
+                "alias": "CreateOrg",
+                "type": "AUTH0",
+                "action": "SEND_REQUEST",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "connection_id": "#CONN-3#",
+                  "method": "POST",
+                  "pathname": "/api/v2/organizations",
+                  "payload": {
+                    "name": "{{vars.stub}}",
+                    "metadata": {
+                      "tax_id": "{{fields.text_federal_tax_id}}",
+                      "ap_contact_name": "{{fields.text_AP_Contact_Name}}"
+                    },
+                    "display_name": "{{vars.companyName}}"
+                  }
+                }
+              },
+              {
+                "id": "custom_api_request_x7Wp",
+                "alias": "Add Connection to Newly Created Org as Member",
+                "type": "AUTH0",
+                "action": "SEND_REQUEST",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "connection_id": "#CONN-3#",
+                  "method": "POST",
+                  "pathname": "/api/v2/organizations/{{actions.custom_api_request_i4lZ.body.id}}/enabled_connections",
+                  "payload": {
+                    "connection_id": "con_3xMEmJahQTxIlUv4",
+                    "show_as_button": true,
+                    "is_signup_enabled": true,
+                    "assign_membership_on_login": true
+                  }
+                }
+              },
+              {
+                "id": "custom_api_request_BygB",
+                "alias": "Add User to Organization as member",
+                "type": "AUTH0",
+                "action": "SEND_REQUEST",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "connection_id": "#CONN-3#",
+                  "method": "POST",
+                  "pathname": "/api/v2/organizations/{{actions.custom_api_request_i4lZ.body.id}}/members",
+                  "payload": {
+                    "members": [
+                      "{{context.user.user_id}}"
+                    ]
+                  }
+                }
+              }
+            ],
+            "else": [
+              {
+                "id": "custom_api_request_yJbd",
+                "alias": "Add Connection to Newly Created Org as Member",
+                "type": "AUTH0",
+                "action": "SEND_REQUEST",
+                "allow_failure": true,
+                "mask_output": false,
+                "params": {
+                  "connection_id": "#CONN-3#",
+                  "method": "POST",
+                  "pathname": "/api/v2/organizations/{{actions.custom_api_request_i4lZ.body.id}}/enabled_connections",
+                  "payload": {
+                    "connection_id": "con_3xMEmJahQTxIlUv4",
+                    "show_as_button": true,
+                    "is_signup_enabled": true,
+                    "assign_membership_on_login": true
+                  }
+                }
+              },
+              {
+                "id": "custom_api_request_mOWQ",
+                "alias": "Add User to Organization as member",
+                "type": "AUTH0",
+                "action": "SEND_REQUEST",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "connection_id": "#CONN-3#",
+                  "method": "POST",
+                  "pathname": "/api/v2/organizations/{{actions.custom_api_request_i4lZ.body.id}}/members",
+                  "payload": {
+                    "members": [
+                      "{{context.user.user_id}}"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "#FLOW-3#": {
+      "name": "BizVerify",
+      "actions": [
+        {
+          "id": "http_request_bizverify_format_check",
+          "alias": "formatCheck",
+          "type": "HTTP",
+          "action": "SEND_REQUEST",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "connection_id": "#CONN-4#",
+            "method": "GET",
+            "url": "https://eu-central-1.global-biz-verify-api.open-automation.io/check_registration_number/US/{{fields.dropdown_HPqh}}-{{fields.text_federal_tax_id}}"
+          }
+        },
+        {
+          "id": "if_formatcheck_success_then_goto_step2",
+          "alias": "check_format_conditional",
+          "type": "FLOW",
+          "action": "BOOLEAN_CONDITION",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "if": {
+              "operands": [
+                {
+                  "operands": [
+                    "{{actions.http_request_bizverify_format_check.success}}",
+                    true
+                  ],
+                  "operator": "EQ"
+                },
+                {
+                  "operands": [
+                    "{{actions.http_request_bizverify_format_check.body.br_id_valid}}",
+                    "1"
+                  ],
+                  "operator": "EQ"
+                }
+              ],
+              "operator": "AND"
+            },
+            "then": [
+              {
+                "id": "http_request_LFqj",
+                "type": "HTTP",
+                "action": "SEND_REQUEST",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "connection_id": "#CONN-4#",
+                  "method": "POST",
+                  "url": "https://eu-central-1.global-biz-verify-api.open-automation.io/check_business",
+                  "payload": {
+                    "country": "{{actions.http_request_bizverify_format_check.body.country}}",
+                    "business_name": "{{fields.company_name}}",
+                    "registration_number": "{{actions.http_request_bizverify_format_check.body.br_id}}"
+                  },
+                  "content_type": "JSON"
+                }
+              },
+              {
+                "id": "if_then_reg_success",
+                "alias": "If reg success",
+                "type": "FLOW",
+                "action": "BOOLEAN_CONDITION",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "if": {
+                    "operands": [
+                      {
+                        "operands": [
+                          "{{actions.http_request_LFqj.success}}",
+                          true
+                        ],
+                        "operator": "EQ"
+                      }
+                    ],
+                    "operator": "AND"
+                  },
+                  "then": [
+                    {
+                      "id": "http_request_S574",
+                      "alias": "Get stub and store org name",
+                      "type": "HTTP",
+                      "action": "SEND_REQUEST",
+                      "allow_failure": false,
+                      "mask_output": false,
+                      "params": {
+                        "connection_id": "#CONN-1#",
+                        "method": "POST",
+                        "url": "https://demo-socure-idplus-docv.workflows.okta.com/api/flo/8484ed7105c0c7ddcd4dd20f9a2e7638/invoke?clientToken=0fc1b8178dc720ee58c0dc6ec28ccc469e474d2834a57e144bd8513515e5c893",
+                        "payload": {
+                          "matchValue": "{{actions.http_request_LFqj.body.matching_details[0]}}"
+                        },
+                        "content_type": "JSON"
+                      }
+                    },
+                    {
+                      "id": "store_shared_variable_pDd7",
+                      "type": "FLOW",
+                      "action": "STORE_VARS",
+                      "allow_failure": true,
+                      "mask_output": false,
+                      "params": {
+                        "vars": {
+                          "stub": "{{actions.http_request_S574.body.output.stub}}",
+                          "highMatch": "{{actions.http_request_S574.body.output.highMatch}}",
+                          "orgDisplay": "{{actions.http_request_S574.body.output.companyName}}"
+                        }
+                      }
+                    },
+                    {
+                      "id": "if_then_condition_vG90",
+                      "type": "FLOW",
+                      "action": "BOOLEAN_CONDITION",
+                      "allow_failure": false,
+                      "mask_output": false,
+                      "params": {
+                        "if": {
+                          "operands": [
+                            {
+                              "operands": [
+                                "true",
+                                "false"
+                              ],
+                              "operator": "EQ"
+                            }
+                          ],
+                          "operator": "AND"
+                        },
+                        "then": [
+                          {
+                            "id": "http_request_wWHZ",
+                            "type": "HTTP",
+                            "action": "SEND_REQUEST",
+                            "allow_failure": false,
+                            "mask_output": false,
+                            "params": {
+                              "connection_id": "#CONN-4#",
+                              "method": "POST",
+                              "url": "https://eu-central-1.global-biz-verify-api.open-automation.io/get_result",
+                              "payload": {
+                                "request_id": "{{actions.http_request_LFqj.body.request_id}}"
+                              },
+                              "content_type": "JSON"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "else": [
+                    {
+                      "id": "show_error_message_VxBT",
+                      "alias": "FailedStep2",
+                      "type": "FLOW",
+                      "action": "ERROR_MESSAGE",
+                      "allow_failure": false,
+                      "mask_output": false,
+                      "params": {
+                        "message": "Your business name {{fields.company_name}} does not correlate with the registration number provided. "
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "else": [
+              {
+                "id": "show_error_message_UVtI",
+                "alias": "Registration number is incorrectly formatted ",
+                "type": "FLOW",
+                "action": "ERROR_MESSAGE",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "message": "Your Registration number is incorrectly formatted for {{fields.tel_Qx4M.countryCode}}.  Is the business registered in a different number from the phone number prefix?"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "connections": {
+    "#CONN-1#": {
+      "id": "ac_xsf77oYKAx4ed8qaznt5v1",
+      "app_id": "HTTP",
+      "name": "HTTP #2"
+    },
+    "#CONN-3#": {
+      "id": "ac_6AVrVZXqAx91LvfDCq6ufV",
+      "app_id": "AUTH0",
+      "name": "OrgManager"
+    },
+    "#CONN-2#": {
+      "id": "ac_gvC2MD5ixN2jKMPY8MYTbf",
+      "app_id": "AUTH0",
+      "name": "CIC"
+    },
+    "#CONN-4#": {
+      "id": "ac_gjgQkd4hHSTovsjpMjFeCh",
+      "app_id": "HTTP",
+      "name": "BixVerify"
+    }
+  }
+}

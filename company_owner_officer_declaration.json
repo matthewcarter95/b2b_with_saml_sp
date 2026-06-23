@@ -1,0 +1,393 @@
+{
+  "version": "4.0.0",
+  "form": {
+    "name": "CompanyOwnerOfficerDeclaration",
+    "languages": {
+      "primary": "en"
+    },
+    "nodes": [
+      {
+        "id": "step_4iwC",
+        "type": "STEP",
+        "coordinates": {
+          "x": 725,
+          "y": -639
+        },
+        "alias": "Profile details",
+        "config": {
+          "components": [
+            {
+              "id": "image_FExF",
+              "category": "BLOCK",
+              "type": "IMAGE",
+              "config": {
+                "src": "https://img.logo.dev/unitedrentals.com?token=pk_VxDwLGYDQZ6ccc08gFW5Rg",
+                "position": "CENTER",
+                "height": 50
+              }
+            },
+            {
+              "id": "rich_text_hPsU",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<h2>Tell us a bit about you</h2><p>We need you to complete your profile to personalize your experience.</p>"
+              }
+            },
+            {
+              "id": "text_2pqG",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Name",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "job_title",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Job title",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false,
+                "default_value": "CEO",
+                "placeholder": "CEO"
+              }
+            },
+            {
+              "id": "password_1U5F",
+              "category": "FIELD",
+              "type": "PASSWORD",
+              "label": "SSN / SIN",
+              "required": false,
+              "sensitive": true,
+              "config": {
+                "hash": "NONE",
+                "complexity": false,
+                "nist": false,
+                "strength_meter": false
+              }
+            },
+            {
+              "id": "date_f9CT",
+              "category": "FIELD",
+              "type": "DATE",
+              "label": "Date of Birth",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "format": "DATE"
+              }
+            },
+            {
+              "id": "text_5XQf",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Address",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false,
+                "default_value": "75 Prospect St.",
+                "placeholder": "75 Prospect St."
+              }
+            },
+            {
+              "id": "text_ftoX",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "City",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "multiline": false,
+                "default_value": "Canton",
+                "placeholder": "Canton"
+              }
+            },
+            {
+              "id": "dropdown_1zsG",
+              "category": "FIELD",
+              "type": "DROPDOWN",
+              "label": "State",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "AL",
+                    "value": "AL"
+                  },
+                  {
+                    "label": "AR",
+                    "value": "AR"
+                  },
+                  {
+                    "label": "CA",
+                    "value": "CA"
+                  },
+                  {
+                    "label": "FL",
+                    "value": "FL"
+                  },
+                  {
+                    "label": "NY",
+                    "value": "NY"
+                  },
+                  {
+                    "label": "TX",
+                    "value": "TX"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "text_cqA7",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Zip/Postal Code",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false,
+                "default_value": "02021",
+                "placeholder": "02021"
+              }
+            },
+            {
+              "id": "next_button_YKS2",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "flow_NLtw"
+        }
+      },
+      {
+        "id": "flow_NLtw",
+        "type": "FLOW",
+        "coordinates": {
+          "x": 1246,
+          "y": -19
+        },
+        "config": {
+          "flow_id": "#FLOW-1#",
+          "next_node": "$ending"
+        }
+      },
+      {
+        "id": "router_MO3B",
+        "type": "ROUTER",
+        "coordinates": {
+          "x": -218,
+          "y": -15
+        },
+        "alias": "Credit Application",
+        "config": {
+          "rules": [
+            {
+              "id": "id_1597735781211",
+              "alias": "Rule 1",
+              "condition": {
+                "operands": [
+                  {
+                    "operands": [
+                      "{{fields.boolean_applyCredit}}",
+                      true
+                    ],
+                    "operator": "EQ"
+                  }
+                ],
+                "operator": "AND"
+              },
+              "next_node": "step_ownerOfficer"
+            }
+          ]
+        }
+      },
+      {
+        "id": "step_ownerOfficer",
+        "type": "STEP",
+        "coordinates": {
+          "x": 59,
+          "y": -636
+        },
+        "alias": "Declare Owner or Officer",
+        "config": {
+          "components": [
+            {
+              "id": "image_E0Zj",
+              "category": "BLOCK",
+              "type": "IMAGE",
+              "config": {
+                "src": "https://img.logo.dev/unitedrentals.com?token=pk_VxDwLGYDQZ6ccc08gFW5Rg",
+                "position": "CENTER",
+                "height": 135
+              }
+            },
+            {
+              "id": "choice_wnYG",
+              "category": "FIELD",
+              "type": "CHOICE",
+              "label": "Are you an Owner or Officer of your company?",
+              "hint": "<p>Officers can enter into contracts with United Rentals online but requires a higher level of identity verification.</p>",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiple": false,
+                "options": [
+                  {
+                    "label": "Yes",
+                    "value": "Yes"
+                  },
+                  {
+                    "label": "No",
+                    "value": "No"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "next_button_dI1N",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "router_ownerOfficer"
+        }
+      },
+      {
+        "id": "step_te16",
+        "type": "STEP",
+        "coordinates": {
+          "x": -734,
+          "y": -389
+        },
+        "alias": "New step",
+        "config": {
+          "components": [
+            {
+              "id": "image_Shdv",
+              "category": "BLOCK",
+              "type": "IMAGE",
+              "config": {
+                "src": "https://img.logo.dev/unitedrentals.com?token=pk_VxDwLGYDQZ6ccc08gFW5Rg",
+                "position": "CENTER",
+                "height": 135
+              }
+            },
+            {
+              "id": "boolean_applyCredit",
+              "category": "FIELD",
+              "type": "BOOLEAN",
+              "label": "Would you like to apply for credit?",
+              "required": false,
+              "sensitive": false,
+              "config": {
+                "default_value": true
+              }
+            },
+            {
+              "id": "next_button_8smU",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "router_MO3B"
+        }
+      },
+      {
+        "id": "router_ownerOfficer",
+        "type": "ROUTER",
+        "coordinates": {
+          "x": 473,
+          "y": -195
+        },
+        "alias": "YesOwnerOfficer",
+        "config": {
+          "rules": [
+            {
+              "id": "id_6457410673101",
+              "alias": "Rule 1",
+              "condition": {
+                "operands": [
+                  {
+                    "operands": [
+                      "{{fields.choice_wnYG}}",
+                      "Yes"
+                    ],
+                    "operator": "EQ"
+                  }
+                ],
+                "operator": "AND"
+              },
+              "next_node": "step_4iwC"
+            }
+          ],
+          "fallback": "flow_NLtw"
+        }
+      }
+    ],
+    "start": {
+      "next_node": "step_te16",
+      "coordinates": {
+        "x": -967,
+        "y": -53
+      }
+    },
+    "ending": {
+      "resume_flow": true,
+      "coordinates": {
+        "x": 1728,
+        "y": 61
+      }
+    }
+  },
+  "flows": {
+    "#FLOW-1#": {
+      "name": "OwnerOfficerUpdateUser_metadata",
+      "actions": [
+        {
+          "id": "updateUser_j0M1",
+          "type": "AUTH0",
+          "action": "UPDATE_USER",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "connection_id": "#CONN-1#",
+            "user_id": "{{context.user.user_id}}",
+            "changes": {
+              "user_metadata": {
+                "profile": {
+                  "job_title": "{{fields.job_title}}"
+                },
+                "declareOwnerOrOfficer": "{{fields.choice_wnYG}}"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "connections": {
+    "#CONN-1#": {
+      "id": "ac_gvC2MD5ixN2jKMPY8MYTbf",
+      "app_id": "AUTH0",
+      "name": "CIC"
+    }
+  }
+}

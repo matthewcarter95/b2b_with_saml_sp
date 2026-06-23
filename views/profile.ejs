@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>My Profile — SAML SP Demo</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main class="card">
+    <header class="row">
+      <h1>My Profile</h1>
+      <nav class="row" style="gap: 0.5rem;">
+        <a class="button button--secondary" href="/home">Home</a>
+        <a class="button button--secondary" href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <% if (notice) { %>
+      <div class="<%= notice.type === 'success' ? 'success-block' : 'error-block' %>">
+        <%= notice.message %>
+      </div>
+    <% } %>
+
+    <% if (tokenError) { %>
+      <div class="error-block">
+        <strong><%= tokenError.message || 'Profile data unavailable' %></strong>
+        <% if (tokenError.status) { %>
+          <p>HTTP status: <code><%= tokenError.status %></code></p>
+        <% } %>
+        <% if (tokenError.body) { %>
+          <details open>
+            <summary>Response body</summary>
+            <pre class="token"><code><%= typeof tokenError.body === 'string' ? tokenError.body : JSON.stringify(tokenError.body, null, 2) %></code></pre>
+          </details>
+        <% } %>
+      </div>
+    <% } else { %>
+      <section>
+        <h2>Editable fields</h2>
+        <form method="post" action="/profile" class="form">
+          <label>
+            <span>Display name</span>
+            <input type="text" name="display_name" value="<%= userMetadata.display_name || '' %>" maxlength="120" />
+          </label>
+          <label>
+            <span>Title</span>
+            <input type="text" name="title" value="<%= userMetadata.title || '' %>" maxlength="120" />
+          </label>
+          <label>
+            <span>Phone</span>
+            <input type="text" name="phone" value="<%= userMetadata.phone || '' %>" maxlength="40" />
+          </label>
+          <label>
+            <span>Department</span>
+            <input type="text" name="department" value="<%= userMetadata.department || '' %>" maxlength="120" />
+          </label>
+          <label>
+            <span>Bio</span>
+            <textarea name="bio" rows="4" maxlength="1000"><%= userMetadata.bio || '' %></textarea>
+          </label>
+          <div class="row" style="justify-content: flex-end;">
+            <button type="submit" class="button">Save</button>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>Read-only</h2>
+        <dl>
+          <% if (profile.name || (userData && userData.name)) { %>
+            <dt>Name</dt><dd><code><%= profile.name || userData.name %></code></dd>
+          <% } %>
+          <dt>NameID</dt><dd><code><%= profile.nameID %></code></dd>
+          <% if (userData && userData.email) { %>
+            <dt>Email</dt><dd><code><%= userData.email %></code></dd>
+          <% } %>
+          <% if (userData && userData.created_at) { %>
+            <dt>Created</dt><dd><code><%= userData.created_at %></code></dd>
+          <% } %>
+          <% if (userData && userData.last_login) { %>
+            <dt>Last login</dt><dd><code><%= userData.last_login %></code></dd>
+          <% } %>
+        </dl>
+      </section>
+
+      <details>
+        <summary>Raw user_metadata</summary>
+        <pre class="token"><code><%= JSON.stringify(userMetadata, null, 2) %></code></pre>
+      </details>
+
+      <details>
+        <summary>Full Management API user record</summary>
+        <pre class="token"><code><%= JSON.stringify(userData, null, 2) %></code></pre>
+      </details>
+    <% } %>
+  </main>
+</body>
+</html>
